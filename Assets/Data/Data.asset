@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6399e844fb44d383e662f22b646593, type: 3}
+  m_Name: Data
+  m_EditorClassIdentifier: 
+  PlayerStats: {fileID: 11400000, guid: ed483b6b86d4dea42a172f54f60c66ce, type: 2}
+  FetusTableStackData: {fileID: 11400000, guid: 1a33123da8f6655458a4bce8972da8ff, type: 2}
+  PlayerPrefab: {fileID: 5026271976963435990, guid: 90cc327e3bf603647add26285e5c96d1, type: 3}
+  PlantPrefab: {fileID: 5093541829599954191, guid: 790fedbf2a3b6f640afb0a7a110da549, type: 3}
+  FetusPrefab: {fileID: 1030770585333282443, guid: 161a0b87a5cb51b499c8ab8f58961ef4, type: 3}
+  FetusTablePrefab: {fileID: 5214996668261002411, guid: e8810af9d2fccf247bf0eb03dcb92b9d, type: 3}
+  PlantTime: 3
