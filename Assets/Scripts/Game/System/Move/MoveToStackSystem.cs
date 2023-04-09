@@ -11,6 +11,7 @@ namespace Game.System
 
         readonly EcsPoolInject<BaseViewComponent> transformPool = default;
         readonly EcsPoolInject<DirectionComponent> directionPool = default;
+        readonly EcsPoolInject<SpeedComponent> speedPool = default;
         readonly EcsPoolInject<MoveToTargetComponent> targetPool = default;
         readonly EcsPoolInject<StackIndexComponent> stackIndexPool = default;
         readonly EcsPoolInject<StackComponent> stackPool = default;
@@ -50,6 +51,7 @@ namespace Game.System
                 {
                     targetPool.Value.Del(entity);
                     directionPool.Value.Del(entity);
+                    speedPool.Value.Del(entity);
                     entTrans.parent= stackPlace;
                 }
                 

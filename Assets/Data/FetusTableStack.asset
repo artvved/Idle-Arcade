@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0698abeceff84bb091a6eb4dbc88030f, type: 3}
   m_Name: FetusTableStack
   m_EditorClassIdentifier: 
-  MaxCapacity: 5
-  Offset: 0.5
+  Offset: 0.8
   XRows: 3
   YRows: 1
   ZRows: 3

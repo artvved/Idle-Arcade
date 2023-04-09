@@ -18,10 +18,11 @@ namespace Game.Service
 
 
         private EcsPool<PlayerTag> playerPool;
+        private EcsPool<FetusTag> fetusPool;
         private EcsPool<FetusTableTag> fetusTablePool;
         private EcsPool<PlayerStatsComponent> playerStatsPool;
         private EcsPool<PlantComponent> plantPool;
-        
+
         private EcsPool<BaseViewComponent> baseViewPool;
         private EcsPool<UnitViewComponent> unitViewPool;
         private EcsPool<PlantViewComponent> plantViewPool;
@@ -50,6 +51,7 @@ namespace Game.Service
             stackPool = this.world.GetPool<StackComponent>();
             unitViewPool = this.world.GetPool<UnitViewComponent>();
             fetusTablePool = this.world.GetPool<FetusTableTag>();
+            fetusPool = world.GetPool<FetusTag>();
         }
 
 
@@ -94,11 +96,12 @@ namespace Game.Service
 
             return playerEntity;
         }
+
         public int InstantiateFetusTable(Vector3 pos)
         {
             var entity = InstantiateObj(staticData.FetusTablePrefab, pos);
-            
-            
+
+
             fetusTablePool.Add(entity);
 
             var unitView = (UnitView) baseViewPool.Get(entity).Value;
@@ -109,11 +112,14 @@ namespace Game.Service
             return entity;
         }
 
-        private void InitStacks(StackData stackData,UnitView view,int entity)
+        private void InitStacks(StackData stackData, UnitView view, int entity)
         {
             ref var stackComponent = ref stackPool.Add(entity);
-            stackComponent.MaxCapacity = stackData.MaxCapacity;
-            stackComponent.Places = new Transform[stackData.XRows * stackData.YRows*stackData.ZRows];
+            var maxCapacity = stackData.XRows * stackData.YRows * stackData.ZRows;
+            stackComponent.MaxCapacity = maxCapacity;
+            stackComponent.Places = new Transform[maxCapacity];
+            stackComponent.Entities = new EcsPackedEntity[maxCapacity];
+            int count = 0;
             for (int y = 0; y < stackData.YRows; y++)
             {
                 for (int x = 0; x < stackData.XRows; x++)
@@ -121,9 +127,10 @@ namespace Game.Service
                     for (int z = 0; z < stackData.ZRows; z++)
                     {
                         var go = new GameObject();
-                        go.transform.position = view.StackPlace.position + new Vector3(x,y,z)*stackData.Offset;
+                        go.transform.position = view.StackPlace.position + new Vector3(x, y, z) * stackData.Offset;
                         go.transform.parent = view.StackPlace;
-                        stackComponent.Places[y + x+z] = go.transform;
+                        stackComponent.Places[count] = go.transform;
+                        count++;
                     }
                 }
             }
@@ -133,6 +140,7 @@ namespace Game.Service
         public int InstantiateFetus(Transform fetusPlace)
         {
             var ent = InstantiateObj(staticData.FetusPrefab, fetusPlace.position);
+            fetusPool.Add(ent);
             animatingPool.Add(ent);
             return ent;
         }

@@ -1,4 +1,5 @@
 using DefaultNamespace;
+using DefaultNamespace.Game.Component.Actions;
 using Game.Component;
 using Game.Mono;
 using Game.Service;
@@ -16,7 +17,7 @@ namespace Game.System
         private EcsWorld world;
         private EcsWorld eventWorld;
         
-        private readonly EcsPoolInject<HarvestEventComponent> harvestPool = Idents.EVENT_WORLD;
+       
         private EcsPoolInject<StackComponent> stackPool = default;
         private EcsPoolInject<PlantComponent> plantPool = default;
         private EcsPoolInject<SpeedComponent> speedPool = default;
@@ -25,6 +26,8 @@ namespace Game.System
         private EcsPoolInject<StackIndexComponent> stackIndexPool = default;
         private EcsPoolInject<AnimatorComponent> animatorPool = default;
         private EcsPoolInject<BaseViewComponent> viewPool = default;
+        private EcsPoolInject<HarvestingComponent> harvestingPool = default;
+
       
         
         private EcsFilter filter;
@@ -34,15 +37,16 @@ namespace Game.System
             world = systems.GetWorld();
             eventWorld = systems.GetWorld(Idents.EVENT_WORLD);
             
-            filter = eventWorld.Filter<HarvestEventComponent>().End();
+            filter = world.Filter<PlayerTag>().Inc<HarvestingComponent>().End();
         }
 
         public void Run(IEcsSystems systems)
         {
-            foreach (var entity in filter)
+            foreach (var unit in filter)
             {
-                harvestPool.Value.Get(entity).Sender.Unpack(world, out int plant);
-                harvestPool.Value.Get(entity).Collider.Unpack(world, out int unit);
+                harvestingPool.Value.Get(unit).Target.Unpack(world, out int plant);
+             
+               
                 
                 ref var stackComponent = ref stackPool.Value.Get(unit);
 
@@ -56,6 +60,7 @@ namespace Game.System
                 plantComponent.HasFetus = false;
                 
                 plantComponent.Fetus.Unpack(world, out int fetus);
+                stackComponent.Entities[stackComponent.CurrCapacity] = world.PackEntity(fetus);
                 speedPool.Value.Add(fetus).Value = 10f;
                 directionPool.Value.Add(fetus).Value=Vector3.zero;
                 moveToPool.Value.Add(fetus).Value = world.PackEntity(unit);

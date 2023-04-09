@@ -45,6 +45,7 @@ public class Startup : MonoBehaviour
             .Add(new CollisionSystem())
             
             .Add(new HarvestSystem())
+            .Add(new PuttingSystem())
             .Add(new MoveToStackSystem())
 
             //.Add(new TickSystem())
@@ -52,7 +53,7 @@ public class Startup : MonoBehaviour
             
             .DelHerePhysics(Idents.EVENT_WORLD)
             .DelHere<CoinsChangedEventComponent>(Idents.EVENT_WORLD)
-            .DelHere<HarvestEventComponent>(Idents.EVENT_WORLD)
+           
 
           
 #if UNITY_EDITOR
@@ -62,6 +63,7 @@ public class Startup : MonoBehaviour
             .Inject(new Fabric(world,eventWorld,staticData))
             .Inject(sceneData)
             .Inject(staticData)
+            .Inject(new MovementService(world))
             .InjectUgui(sceneData.EcsUguiEmitter,Idents.EVENT_WORLD)
             .Init();
         
