@@ -10,11 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 2920345218026524339}
   - component: {fileID: 2920345218026524348}
-  - component: {fileID: 5026271976963435990}
   - component: {fileID: -3438026492049094637}
   - component: {fileID: 7453510196012672688}
+  - component: {fileID: 827293017290338224}
+  - component: {fileID: 8754566206727858845}
   m_Layer: 6
-  m_Name: Farmer
+  m_Name: Customer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57,21 +58,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &5026271976963435990
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2920345218026524338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1da2485852c4ae783991e9cf517fd38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Entity: 0
-  StackPlace: {fileID: 8442017953314736667}
-  LookAt: {fileID: 7901689884373165927}
 --- !u!136 &-3438026492049094637
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -102,6 +88,43 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!195 &827293017290338224
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2920345218026524338}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 180
+  m_StoppingDistance: 3
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &8754566206727858845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2920345218026524338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56fd0d39c9b645b3a4e9ebd252e55b34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Entity: 0
+  StackPlace: {fileID: 8442017953314736667}
+  NavMeshAgent: {fileID: 827293017290338224}
 --- !u!1 &2920345218646330203
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,8 +2,9 @@
 
 namespace DefaultNamespace.Game.Component.Actions
 {
-    public struct PuttingComponent
+    public struct ItemTranslationComponent
     {
         public EcsPackedEntity Target;
+        public bool IsPutting;
     }
 }

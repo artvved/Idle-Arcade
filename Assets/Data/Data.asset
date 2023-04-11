@@ -13,9 +13,13 @@ MonoBehaviour:
   m_Name: Data
   m_EditorClassIdentifier: 
   PlayerStats: {fileID: 11400000, guid: ed483b6b86d4dea42a172f54f60c66ce, type: 2}
+  CustomerStats: {fileID: 11400000, guid: c9ab3c8943cd6ee4b99b6cdbfbd2fa70, type: 2}
   FetusTableStackData: {fileID: 11400000, guid: 1a33123da8f6655458a4bce8972da8ff, type: 2}
   PlayerPrefab: {fileID: 5026271976963435990, guid: 90cc327e3bf603647add26285e5c96d1, type: 3}
+  CustomerPrefab: {fileID: 8754566206727858845, guid: 5e4d850e22a645641a9cb3945506debc, type: 3}
   PlantPrefab: {fileID: 5093541829599954191, guid: 790fedbf2a3b6f640afb0a7a110da549, type: 3}
   FetusPrefab: {fileID: 1030770585333282443, guid: 161a0b87a5cb51b499c8ab8f58961ef4, type: 3}
   FetusTablePrefab: {fileID: 5214996668261002411, guid: e8810af9d2fccf247bf0eb03dcb92b9d, type: 3}
-  PlantTime: 3
+  PlantTime: 1
+  CustomerTime: 3
+  MaxCustomers: 3

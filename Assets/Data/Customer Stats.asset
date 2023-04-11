@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d2fb8fbb7b254fdda61cb71497385c6c, type: 3}
-  m_Name: UnitStats
+  m_Name: Customer Stats
   m_EditorClassIdentifier: 
   MaxSpeed: 4
   Coins: 10
-  StackData: {fileID: 11400000, guid: ee509d34f817a7b49b8fdfa53e0f3ec2, type: 2}
+  StackData: {fileID: 11400000, guid: 00fb2b1baed938844b5e0b07d32629c0, type: 2}

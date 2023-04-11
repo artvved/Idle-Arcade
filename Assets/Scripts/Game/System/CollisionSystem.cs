@@ -20,8 +20,10 @@ namespace Game.System
 
         private readonly EcsPoolInject<OnTriggerEnterEvent> triggerPool = Idents.EVENT_WORLD;
         private readonly EcsPoolInject<OnTriggerExitEvent> triggerExitPool = Idents.EVENT_WORLD;
-        private readonly EcsPoolInject<PuttingComponent> putPool = default;
+        private readonly EcsPoolInject<ItemTranslationComponent> putPool = default;
         private readonly EcsPoolInject<PlantComponent> plantPool = default;
+        private readonly EcsPoolInject<PlayerTag> playerPool = default;
+        private readonly EcsPoolInject<CustomerComponent> customerPool = default;
         private readonly EcsPoolInject<FetusTableTag> tablePool = default;
 
         private readonly EcsPoolInject<HarvestingComponent> harvestingPool = default;
@@ -92,15 +94,30 @@ namespace Game.System
 
                 if (tablePool.Value.Has(sender))
                 {
-                    if (putPool.Value.Has(collider))
-                        putPool.Value.Get(collider).Target = world.PackEntity(sender);
-                    else
+                    if (playerPool.Value.Has(collider))
                     {
-                        putPool.Value.Add(collider).Target = world.PackEntity(sender);
-                        ref var tickComponent = ref tickPool.Value.Add(collider);
-                        tickComponent.CurrentTime=tickComponent.FinalTime = 0.5f;  //to static data?
+                        AddPutTickComponent(sender, collider,true);
                     }
+                    else if (customerPool.Value.Has(collider))
+                    {
+                        AddPutTickComponent(sender, collider,false);
+                    }
+
                 }
+            }
+        }
+
+        private void AddPutTickComponent(int sender,int collider,bool isPutting)
+        {
+            if (putPool.Value.Has(collider))
+                putPool.Value.Get(collider).Target = world.PackEntity(sender);
+            else
+            {
+                ref var component = ref putPool.Value.Add(collider);
+                component.Target = world.PackEntity(sender);
+                component.IsPutting = isPutting;
+                ref var tickComponent = ref tickPool.Value.Add(collider);
+                tickComponent.CurrentTime=tickComponent.FinalTime = 0.3f;  //to static data?
             }
         }
     }

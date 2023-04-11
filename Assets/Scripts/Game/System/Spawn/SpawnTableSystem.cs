@@ -16,7 +16,7 @@ namespace Game.System
 
         public void Init(IEcsSystems systems)
         {
-            fabric.Value.InstantiateFetusTable(sceneData.Value.FetusTablePlace.position);
+            fabric.Value.InstantiateTable(sceneData.Value.FetusTablePlace.position);
         }
 
 

@@ -18,7 +18,7 @@ namespace Game.System
 
         private readonly EcsCustomInject<SceneData> sceneData = default;
 
-        private readonly EcsPoolInject<PlayerStatsComponent> playerStatsPool = default;
+        private readonly EcsPoolInject<UnitStatsComponent> playerStatsPool = default;
         private readonly EcsPoolInject<SpeedComponent> speedPool = default;
         private readonly EcsPoolInject<DirectionComponent> directionPool = default;
         private readonly EcsPoolInject<AnimatorComponent> animPool = default;

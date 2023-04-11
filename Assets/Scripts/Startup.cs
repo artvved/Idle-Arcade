@@ -38,21 +38,25 @@ public class Startup : MonoBehaviour
             .Add(new MoveJoystickInputSystem())
             
             .Add(new SpawnPlantsSystem())
+            .Add(new SpawnCustomerTickSystem())
             .Add(new SpawnFetusTickSystem())
+            .Add(new CustomerTargetSystem())
             
             .Add(new MoveApplySystem())
             .Add(new RotationApplySystem())
             .Add(new CollisionSystem())
             
             .Add(new HarvestSystem())
-            .Add(new PuttingSystem())
+            .Add(new StackingSystem())
             .Add(new MoveToStackSystem())
+          
 
             //.Add(new TickSystem())
             .Add(new UpdateCoinsViewSystem())
-            
+
             .DelHerePhysics(Idents.EVENT_WORLD)
             .DelHere<CoinsChangedEventComponent>(Idents.EVENT_WORLD)
+           
            
 
           

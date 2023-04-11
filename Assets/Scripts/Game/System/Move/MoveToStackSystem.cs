@@ -15,6 +15,7 @@ namespace Game.System
         readonly EcsPoolInject<MoveToTargetComponent> targetPool = default;
         readonly EcsPoolInject<StackIndexComponent> stackIndexPool = default;
         readonly EcsPoolInject<StackComponent> stackPool = default;
+        private EcsPoolInject<AnimatingTag> animatingPool = default;
         private EcsFilter unitTransformFilter;
 
 
@@ -49,6 +50,7 @@ namespace Game.System
                 //reached
                 if (range.magnitude<0.05f)
                 {
+                    animatingPool.Value.Del(entity);
                     targetPool.Value.Del(entity);
                     directionPool.Value.Del(entity);
                     speedPool.Value.Del(entity);
