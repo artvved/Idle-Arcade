@@ -11,7 +11,8 @@ namespace ScriptableData
         public UnitStats CustomerStats;
         public StackData FetusTableStackData;
         public StackData BoxStackData;
-        
+        public StackData MoneyStackData;
+
         public PlayerView PlayerPrefab;
         public CustomerView CustomerPrefab;
         public PlantView PlantPrefab;
@@ -20,6 +21,8 @@ namespace ScriptableData
         public CashTableView CashTablePrefab;
         public ExitView ExitPrefab;
         public BoxView BoxPrefab;
+        public MoneyPlaceView MoneyPlacePrefab;
+        public BaseView CoinPrefab;
         
 
         public float PlantTime;

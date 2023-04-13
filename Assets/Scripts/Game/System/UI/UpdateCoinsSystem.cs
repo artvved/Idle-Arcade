@@ -9,7 +9,7 @@ using ScriptableData;
 
 namespace Game.System
 {
-    public class UpdateCoinsViewSystem : IEcsInitSystem, IEcsRunSystem
+    public class UpdateCoinsSystem : IEcsInitSystem, IEcsRunSystem
     {
         private EcsWorld world;
         private EcsWorld eventWorld;
@@ -34,7 +34,9 @@ namespace Game.System
             {
                 foreach (var player in playerFilter)
                 {
-                    sceneData.Value.CoinsView.TextMeshProUGUI.text = unitPool.Value.Get(player).Coins.ToString();
+                    ref var coins = ref unitPool.Value.Get(player).Coins;
+                    coins++;
+                    sceneData.Value.CoinsView.TextMeshProUGUI.text = coins.ToString();
                 }
             }
         }

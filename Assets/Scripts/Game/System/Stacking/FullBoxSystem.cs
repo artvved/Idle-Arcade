@@ -18,16 +18,21 @@ namespace Game.System
         private EcsWorld world;
 
         private EcsPoolInject<ChangingQueueComponent> changingQueuePool = default;
-        private EcsPoolInject<CustomerComponent> customerPool = default;
+        private EcsPoolInject<UnitStatsComponent> statsPool = default;
         private EcsPoolInject<FullBoxComponent> fullBoxPool = default;
         private EcsPoolInject<DirectionComponent> dirPool = default;
         private EcsCustomInject<MovementService> service = default;
+        private EcsCustomInject<Fabric> fabric = default;
         private EcsPoolInject<TickComponent> tickPool = default;
         private EcsPoolInject<AnimatorComponent> animatorPool = default;
+        private EcsPoolInject<AnimatingTag> animPool = default;
+        private EcsPoolInject<BaseViewComponent> transformPool = default;
+        private EcsPoolInject<CashTableComponent> cashPool = default;
 
         private EcsFilter filter;
         private EcsFilter filterWaitingCustomer;
         private EcsFilter filterTick;
+        private EcsFilter filterCashTable;
 
         public void Init(IEcsSystems systems)
         {
@@ -35,6 +40,7 @@ namespace Game.System
             filter = world.Filter<FullBoxComponent>().Inc<StackComponent>().Inc<AnimatorComponent>().Inc<BoxTag>().Exc<TickComponent>().End();
             filterTick = world.Filter<FullBoxComponent>().Inc<StackComponent>().Inc<AnimatorComponent>().Inc<BoxTag>().Inc<TickComponent>().End();
             filterWaitingCustomer = world.Filter<WaitingForBoxComponent>().Inc<CustomerComponent>().End();
+            filterCashTable = world.Filter<CashTableComponent>().End();
         }
 
         public void Run(IEcsSystems systems)
@@ -55,18 +61,38 @@ namespace Game.System
                 {
                     foreach (var cust in filterWaitingCustomer)
                     {
-                        service.Value.TranslateItemWithNewIndex(box,cust,0);
-                      
+                        service.Value.TranslateItemWithoutCapacity(box, cust, 0);
+                        
+                        var coins = statsPool.Value.Get(cust).Coins;
+                        var moneyEnt = GetMoneyEnt();
+                        Vector3 spawnPlacePosition= ((MoneyPlaceView) transformPool.Value.Get(moneyEnt).Value).SpawnPlace.position;
+                       
+                        for (int i = 0; i < coins; i++)
+                        {
+                            var coin=fabric.Value.InstantiateCoin(spawnPlacePosition);
+                          
+                            service.Value.TranslateItemWithoutGiverStack(coin,moneyEnt,i);
+                          
+                        }
+                        
                         tickPool.Value.Del(box);
+                        fullBoxPool.Value.Del(box);
                     }
-                   
                 }
             }
-            
-            
-           
         }
 
-     
+        private int GetMoneyEnt()
+        {
+            foreach (var table in filterCashTable)
+            {
+                cashPool.Value.Get(table).Money.Unpack(world, out int money);
+                return money;
+            }
+            return -1;
+        }
+        
+
+
     }
 }

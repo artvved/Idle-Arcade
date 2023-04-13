@@ -49,7 +49,7 @@ namespace Game.System
                 directionPool.Value.Get(entity).Value = dir;
                 
                 //reached
-                if (range.magnitude<0.05f)
+                if (range.magnitude<0.01f)
                 {
                     reachedPool.Value.Add(entity);
                     entTrans.parent= stackPlace;

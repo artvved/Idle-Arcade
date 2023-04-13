@@ -64,7 +64,7 @@ namespace Game.System
                     if (animatingPool.Value.Has(item))
                         continue;
 
-                    service.Value.TranslateItem(item, target, ref targetStackComponent, ref giverStackComponent);
+                    service.Value.TranslateItem(item, inUnit,target);
                     
                     if (IsGiverEmpty(giverStackComponent) && isPutting)
                     {

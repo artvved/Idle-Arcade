@@ -21,6 +21,7 @@ namespace Game.Service
         private EcsPool<CustomerComponent> customerPool;
         private EcsPool<FetusTag> fetusPool;
         private EcsPool<BoxTag> boxPool;
+        private EcsPool<CoinTag> coinPool;
         
         private EcsPool<FetusTableTag> fetusTablePool;
         private EcsPool<CashTableComponent> cashTablePool;
@@ -29,7 +30,7 @@ namespace Game.Service
         private EcsPool<UnitStatsComponent> unitStatsPool;
         private EcsPool<PlantComponent> plantPool;
         private EcsPool<QueueComponent> queuePool;
-       
+        private EcsPool<NoRotationComponent> noRotPool;
 
         private EcsPool<BaseViewComponent> baseViewPool;
         private EcsPool<PlantViewComponent> plantViewPool;
@@ -68,6 +69,8 @@ namespace Game.Service
             cashTablePool = this.world.GetPool<CashTableComponent>();
             exitPool = this.world.GetPool<ExitTag>();
             boxPool = this.world.GetPool<BoxTag>();
+            noRotPool = this.world.GetPool<NoRotationComponent>();
+            coinPool = this.world.GetPool<CoinTag>();
         }
 
 
@@ -163,8 +166,12 @@ namespace Game.Service
             queueComponent.Target = view.CustomerTarget;
 
             int box=InstantiateBox(view.BoxSpawnPlace.position);
-            cashTablePool.Add(entity).Box=world.PackEntity(box);
+            ref var cashTableComponent = ref cashTablePool.Add(entity);
+            cashTableComponent.Box=world.PackEntity(box);
 
+            var moneyPlace = InstantiateMoneyPlace(view.MoneyPlace.position);
+            cashTableComponent.Money = world.PackEntity(moneyPlace);
+            
             return entity;
         }
         
@@ -189,6 +196,14 @@ namespace Game.Service
             boxPool.Add(entity);
             var view = (UnitView)baseViewPool.Get(entity).Value;
             InitStacks(staticData.BoxStackData, view.StackPlace, entity);
+            return entity;
+        }
+        
+        public int InstantiateMoneyPlace(Vector3 pos)
+        {
+            var entity = InstantiateObj(staticData.MoneyPlacePrefab, pos);
+            var view = (UnitView)baseViewPool.Get(entity).Value;
+            InitStacks(staticData.MoneyStackData, view.StackPlace, entity);
             return entity;
         }
 
@@ -221,7 +236,16 @@ namespace Game.Service
             var ent = InstantiateObj(staticData.FetusPrefab, fetusPlace.position);
             fetusPool.Add(ent);
             animatorPool.Get(ent).Value.applyRootMotion = false;
-            //animatingPool.Add(ent);
+            noRotPool.Add(ent);
+            return ent;
+        }
+        
+        public int InstantiateCoin(Vector3 pos)
+        {
+            var ent = InstantiateObj(staticData.CoinPrefab, pos);
+            coinPool.Add(ent);
+            animatorPool.Get(ent).Value.applyRootMotion = false;
+            noRotPool.Add(ent);
             return ent;
         }
     }

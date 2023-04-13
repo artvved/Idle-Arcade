@@ -42,8 +42,10 @@ public class Startup : MonoBehaviour
            
             .Add(new MoveApplySystem())
             .Add(new LookAtPlayerSystem())
+            .Add(new CustomerRotationSystem())
             .Add(new RotationApplySystem())
             .Add(new CollisionSystem())
+
             
             .Add(new CustomerTargetSystem())
             .Add(new HarvestSystem())
@@ -52,18 +54,15 @@ public class Startup : MonoBehaviour
             .Add(new FullBoxSystem())
             .Add(new MoveToStackSystem())
             .Add(new ReachedSystem())
+            .Add(new GetMoneySystem())
             .Add(new DestroyDeadSystem())
           
 
             //.Add(new TickSystem())
-            .Add(new UpdateCoinsViewSystem())
+            .Add(new UpdateCoinsSystem())
 
             .DelHerePhysics(Idents.EVENT_WORLD)
             .DelHere<CoinsChangedEventComponent>(Idents.EVENT_WORLD)
-           
-           
-
-          
 #if UNITY_EDITOR
             .Add (new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem ())
             .Add (new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem (Idents.EVENT_WORLD))

@@ -16,6 +16,7 @@ MonoBehaviour:
   CustomerStats: {fileID: 11400000, guid: c9ab3c8943cd6ee4b99b6cdbfbd2fa70, type: 2}
   FetusTableStackData: {fileID: 11400000, guid: 1a33123da8f6655458a4bce8972da8ff, type: 2}
   BoxStackData: {fileID: 11400000, guid: ed611ac8d820798448a77807eba7f7f9, type: 2}
+  MoneyStackData: {fileID: 11400000, guid: 16ec1864f15467f41a6a287e0f290b67, type: 2}
   PlayerPrefab: {fileID: 5026271976963435990, guid: 90cc327e3bf603647add26285e5c96d1, type: 3}
   CustomerPrefab: {fileID: 8754566206727858845, guid: 5e4d850e22a645641a9cb3945506debc, type: 3}
   PlantPrefab: {fileID: 5093541829599954191, guid: 790fedbf2a3b6f640afb0a7a110da549, type: 3}
@@ -24,6 +25,8 @@ MonoBehaviour:
   CashTablePrefab: {fileID: 4431715715423004703, guid: a614776391d548a44b36ba22e96e9388, type: 3}
   ExitPrefab: {fileID: 8015614570837858064, guid: b4bf743a0db4ccf4396ed39b8daf31d7, type: 3}
   BoxPrefab: {fileID: 7941658658437604742, guid: 1a970fdf4f43bd64b8561a3c4497a9bb, type: 3}
+  MoneyPlacePrefab: {fileID: 3666546224530718789, guid: 7e5a597b9a116cb4d89f495794030933, type: 3}
+  CoinPrefab: {fileID: 1602887683368908081, guid: d6d5c8c31bab70448912df495c8d25a4, type: 3}
   PlantTime: 1
   CustomerTime: 3
   MaxCustomers: 3

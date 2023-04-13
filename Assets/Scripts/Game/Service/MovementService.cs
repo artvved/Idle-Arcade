@@ -16,6 +16,7 @@ namespace Game.Service
         private EcsPool<StackIndexComponent> stackIndexPool ;
         private EcsPool<AnimatorComponent> animatorPool;
         private EcsPool<AnimatingTag> animatingPool; 
+        private EcsPool<StackComponent> stackPool; 
       
 
         public MovementService(EcsWorld world)
@@ -28,6 +29,7 @@ namespace Game.Service
             stackIndexPool = world.GetPool<StackIndexComponent>();
             animatorPool = world.GetPool<AnimatorComponent>();
             animatingPool = world.GetPool<AnimatingTag>();
+            stackPool = this.world.GetPool<StackComponent>();
         }
 
         public void SetSpeed(int ent,float speed)
@@ -57,33 +59,41 @@ namespace Game.Service
             return closest;
         }
         
-        public void TranslateItem(int item, int target, ref StackComponent targetStack, ref StackComponent giverStack)
+        public void TranslateItem(int item, int giver,int target)
         {
+            ref var giverStack = ref stackPool.Get(giver);
+            ref var targetStack = ref stackPool.Get(target);
             TranslateItemWithoutCapacity(item, target, targetStack.CurrCapacity);
             targetStack.Entities[targetStack.CurrCapacity] = world.PackEntity(item);
-
             targetStack.CurrCapacity++;
             giverStack.CurrCapacity--;
         }
         
-        private void TranslateItemWithoutCapacity(int item, int target,int index)
+        public void TranslateItemWithoutGiverStack(int item, int target,int index)
         {
-            SetSpeed(item, 10f);
-            SetDirection(item, Vector3.zero);
-            moveToPool.Add(item).Value = world.PackEntity(target);
-            animatingPool.Add(item);
-            animatorPool.Get(item).Value.SetTrigger("Jump");
-            stackIndexPool.Get(item).Value = index;
+            TranslateItemWithoutCapacity(item, target, index);
         }
-        
-        public void TranslateItemWithNewIndex(int item, int target,int index)
+        public void TranslateItemWithoutTargetStack(int item, int giver,int target,int index)
         {
+            ref var giverStack = ref stackPool.Get(giver);
+            TranslateItemWithoutCapacity(item, target, index);
+            giverStack.CurrCapacity--;
+        }
+      
+        
+        public void TranslateItemWithoutCapacity(int item, int target,int index)
+        {
+            baseTransformPool.Get(item).Value.transform.parent = null;
             SetSpeed(item, 10f);
             SetDirection(item, Vector3.zero);
             moveToPool.Add(item).Value = world.PackEntity(target);
             animatingPool.Add(item);
             animatorPool.Get(item).Value.SetTrigger("Jump");
-            stackIndexPool.Add(item).Value = index;
+            
+            if (stackIndexPool.Has(item))
+                stackIndexPool.Get(item).Value = index;
+            else
+                stackIndexPool.Add(item).Value = index;
         }
         
         

@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Game.System
 {
-    public class RotationApplySystem : IEcsInitSystem, IEcsRunSystem
+    public class CustomerRotationSystem : IEcsInitSystem, IEcsRunSystem
     {
         private EcsWorld world;
       
@@ -25,8 +25,7 @@ namespace Game.System
             world = systems.GetWorld();
             unitTransformFilter = world.Filter<DirectionComponent>()
                 .Inc<BaseViewComponent>()
-                .Exc<CustomerComponent>()
-                .Exc<NoRotationComponent>()
+                .Inc<CustomerComponent>()
                 .End();
         }
 
@@ -37,7 +36,8 @@ namespace Game.System
                 var direction = directionPool.Value.Get(entity).Value;
                 var valueTransform = transformPool.Value.Get(entity).Value.transform;
                 
-                valueTransform.rotation = Quaternion.LookRotation(direction);
+                var goal= Quaternion.LookRotation(direction);
+                valueTransform.rotation = Quaternion.Slerp(valueTransform.rotation, goal, 0.05f);
 
             }
         }
