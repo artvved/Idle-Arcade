@@ -15,7 +15,6 @@ namespace Game.System
         private EcsWorld world;
       
         readonly EcsPoolInject<BaseViewComponent> transformPool=default;
-        
         readonly EcsPoolInject<DirectionComponent> directionPool = default;
 
         private EcsFilter unitTransformFilter;
@@ -24,8 +23,7 @@ namespace Game.System
         public void Init(IEcsSystems systems)
         {
             world = systems.GetWorld();
-            unitTransformFilter = world.Filter<SpeedComponent>()
-                .Inc<DirectionComponent>()
+            unitTransformFilter = world.Filter<DirectionComponent>()
                 .Inc<BaseViewComponent>()
                 .End();
         }
@@ -37,8 +35,9 @@ namespace Game.System
                 var direction = directionPool.Value.Get(entity).Value;
                 var valueTransform = transformPool.Value.Get(entity).Value.transform;
                 
-                valueTransform.rotation = Quaternion.LookRotation(direction);
-                
+                var goal= Quaternion.LookRotation(direction);
+                valueTransform.rotation = Quaternion.Slerp(valueTransform.rotation, goal, 0.05f);
+
             }
         }
     }

@@ -10,12 +10,16 @@ namespace ScriptableData
         public UnitStats PlayerStats;
         public UnitStats CustomerStats;
         public StackData FetusTableStackData;
+        public StackData BoxStackData;
         
         public PlayerView PlayerPrefab;
         public CustomerView CustomerPrefab;
         public PlantView PlantPrefab;
         public BaseView FetusPrefab;
         public FetusTableView FetusTablePrefab;
+        public CashTableView CashTablePrefab;
+        public ExitView ExitPrefab;
+        public BoxView BoxPrefab;
         
 
         public float PlantTime;

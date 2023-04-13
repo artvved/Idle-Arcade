@@ -11,6 +11,12 @@ namespace Game.Service
         private EcsPool<BaseViewComponent> baseTransformPool;
         private EcsPool<SpeedComponent> speedPool;
         private EcsPool<DirectionComponent> dirPool;
+        
+        private EcsPool<MoveToTargetComponent> moveToPool ;
+        private EcsPool<StackIndexComponent> stackIndexPool ;
+        private EcsPool<AnimatorComponent> animatorPool;
+        private EcsPool<AnimatingTag> animatingPool; 
+      
 
         public MovementService(EcsWorld world)
         {
@@ -18,6 +24,10 @@ namespace Game.Service
             baseTransformPool = world.GetPool<BaseViewComponent>();
             speedPool = world.GetPool<SpeedComponent>();
             dirPool = world.GetPool<DirectionComponent>();
+            moveToPool = world.GetPool<MoveToTargetComponent>();
+            stackIndexPool = world.GetPool<StackIndexComponent>();
+            animatorPool = world.GetPool<AnimatorComponent>();
+            animatingPool = world.GetPool<AnimatingTag>();
         }
 
         public void SetSpeed(int ent,float speed)
@@ -46,6 +56,37 @@ namespace Game.Service
             
             return closest;
         }
+        
+        public void TranslateItem(int item, int target, ref StackComponent targetStack, ref StackComponent giverStack)
+        {
+            TranslateItemWithoutCapacity(item, target, targetStack.CurrCapacity);
+            targetStack.Entities[targetStack.CurrCapacity] = world.PackEntity(item);
+
+            targetStack.CurrCapacity++;
+            giverStack.CurrCapacity--;
+        }
+        
+        private void TranslateItemWithoutCapacity(int item, int target,int index)
+        {
+            SetSpeed(item, 10f);
+            SetDirection(item, Vector3.zero);
+            moveToPool.Add(item).Value = world.PackEntity(target);
+            animatingPool.Add(item);
+            animatorPool.Get(item).Value.SetTrigger("Jump");
+            stackIndexPool.Get(item).Value = index;
+        }
+        
+        public void TranslateItemWithNewIndex(int item, int target,int index)
+        {
+            SetSpeed(item, 10f);
+            SetDirection(item, Vector3.zero);
+            moveToPool.Add(item).Value = world.PackEntity(target);
+            animatingPool.Add(item);
+            animatorPool.Get(item).Value.SetTrigger("Jump");
+            stackIndexPool.Add(item).Value = index;
+        }
+        
+        
         
         public int GetRandomTarget(EcsFilter filter)
         {

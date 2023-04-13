@@ -17,6 +17,7 @@ namespace ScriptableData
         [Header("Level")]
         public Transform[] PlantPlaces;
         public Transform FetusTablePlace;
+        public Transform CashTablePlace;
         public Transform CustomerSpawnPlace;
         public Transform CustomerExitPlace;
 

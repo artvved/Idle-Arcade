@@ -16,20 +16,22 @@ namespace Game.Service
         private EcsWorld world;
         private EcsWorld eventWorld;
         private StaticData staticData;
-
-
+        
         private EcsPool<PlayerTag> playerPool;
         private EcsPool<CustomerComponent> customerPool;
         private EcsPool<FetusTag> fetusPool;
+        private EcsPool<BoxTag> boxPool;
+        
         private EcsPool<FetusTableTag> fetusTablePool;
-        private EcsPool<CashTableTag> cashTablePool;
+        private EcsPool<CashTableComponent> cashTablePool;
+        private EcsPool<ExitTag> exitPool;
+      
         private EcsPool<UnitStatsComponent> unitStatsPool;
         private EcsPool<PlantComponent> plantPool;
         private EcsPool<QueueComponent> queuePool;
        
 
         private EcsPool<BaseViewComponent> baseViewPool;
-        private EcsPool<UnitViewComponent> unitViewPool;
         private EcsPool<PlantViewComponent> plantViewPool;
         private EcsPool<CustomerViewComponent> customerViewPool;
 
@@ -59,11 +61,13 @@ namespace Game.Service
             tickPool = this.world.GetPool<TickComponent>();
             plantPool = world.GetPool<PlantComponent>();
             stackPool = this.world.GetPool<StackComponent>();
-            unitViewPool = this.world.GetPool<UnitViewComponent>();
+         
             fetusTablePool = this.world.GetPool<FetusTableTag>();
             fetusPool = world.GetPool<FetusTag>();
             
-            cashTablePool = this.world.GetPool<CashTableTag>();
+            cashTablePool = this.world.GetPool<CashTableComponent>();
+            exitPool = this.world.GetPool<ExitTag>();
+            boxPool = this.world.GetPool<BoxTag>();
         }
 
 
@@ -103,8 +107,8 @@ namespace Game.Service
 
             var unitView = (UnitView) baseViewPool.Get(playerEntity).Value;
 
-            InitStacks(stackData, unitView, playerEntity);
-            unitViewPool.Add(playerEntity).Value = unitView;
+            InitStacks(stackData, unitView.StackPlace, playerEntity);
+         
 
             return playerEntity;
         }
@@ -114,7 +118,6 @@ namespace Game.Service
             var entity = InstantiateObj(staticData.CustomerPrefab, pos);
             customerPool.Add(entity);
             
-
             var unitStats = staticData.CustomerStats;
             var stackData = unitStats.StackData;
             
@@ -124,8 +127,8 @@ namespace Game.Service
             
             var unitView = (UnitView) baseViewPool.Get(entity).Value;
 
-            InitStacks(stackData, unitView, entity);
-            unitViewPool.Add(entity).Value = unitView;
+            InitStacks(stackData, unitView.StackPlace, entity);
+          
             ((CustomerView) unitView).NavMeshAgent.speed = unitStats.MaxSpeed;
             customerViewPool.Add(entity).Value = (CustomerView) unitView;
 
@@ -138,19 +141,58 @@ namespace Game.Service
             var entity = InstantiateObj(staticData.FetusTablePrefab, pos);
             fetusTablePool.Add(entity);
 
-            var unitView = (UnitView) baseViewPool.Get(entity).Value;
+            var unitView = (FetusTableView) baseViewPool.Get(entity).Value;
             
             ref var queueComponent = ref queuePool.Add(entity);
             queueComponent.Value = new List<EcsPackedEntity>();
-            queueComponent.Target = unitView.transform;
+            queueComponent.Target = unitView.CustomerTarget;
 
-            InitStacks(staticData.FetusTableStackData, unitView, entity);
-            unitViewPool.Add(entity).Value = unitView;
+            InitStacks(staticData.FetusTableStackData, unitView.StackPlace, entity);
 
             return entity;
         }
+        
+        public int InstantiateCashTable(Vector3 pos)
+        {
+            var entity = InstantiateObj(staticData.CashTablePrefab, pos);
+           
+            var view = (CashTableView) baseViewPool.Get(entity).Value;
+            
+            ref var queueComponent = ref queuePool.Add(entity);
+            queueComponent.Value = new List<EcsPackedEntity>();
+            queueComponent.Target = view.CustomerTarget;
 
-        private void InitStacks(StackData stackData, UnitView view, int entity)
+            int box=InstantiateBox(view.BoxSpawnPlace.position);
+            cashTablePool.Add(entity).Box=world.PackEntity(box);
+
+            return entity;
+        }
+        
+        public int InstantiateExit(Vector3 pos)
+        {
+            var entity = InstantiateObj(staticData.ExitPrefab, pos);
+           
+            var view = (SpecialPlaceView) baseViewPool.Get(entity).Value;
+            
+            ref var queueComponent = ref queuePool.Add(entity);
+            queueComponent.Value = new List<EcsPackedEntity>();
+            queueComponent.Target = view.CustomerTarget;
+
+            exitPool.Add(entity);
+
+            return entity;
+        }
+        
+        public int InstantiateBox(Vector3 pos)
+        {
+            var entity = InstantiateObj(staticData.BoxPrefab, pos);
+            boxPool.Add(entity);
+            var view = (UnitView)baseViewPool.Get(entity).Value;
+            InitStacks(staticData.BoxStackData, view.StackPlace, entity);
+            return entity;
+        }
+
+        private void InitStacks(StackData stackData, Transform stackPlace, int entity)
         {
             ref var stackComponent = ref stackPool.Add(entity);
             var maxCapacity = stackData.XRows * stackData.YRows * stackData.ZRows;
@@ -165,8 +207,8 @@ namespace Game.Service
                     for (int z = 0; z < stackData.ZRows; z++)
                     {
                         var go = new GameObject();
-                        go.transform.position = view.StackPlace.position + new Vector3(x, y, z) * stackData.Offset;
-                        go.transform.parent = view.StackPlace;
+                        go.transform.position = stackPlace.position + new Vector3(x, y, z) * stackData.Offset;
+                        go.transform.parent = stackPlace;
                         stackComponent.Places[count] = go.transform;
                         count++;
                     }
@@ -178,6 +220,7 @@ namespace Game.Service
         {
             var ent = InstantiateObj(staticData.FetusPrefab, fetusPlace.position);
             fetusPool.Add(ent);
+            animatorPool.Get(ent).Value.applyRootMotion = false;
             //animatingPool.Add(ent);
             return ent;
         }

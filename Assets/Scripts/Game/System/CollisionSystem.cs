@@ -24,21 +24,35 @@ namespace Game.System
         private readonly EcsPoolInject<PlantComponent> plantPool = default;
         private readonly EcsPoolInject<PlayerTag> playerPool = default;
         private readonly EcsPoolInject<CustomerComponent> customerPool = default;
-        private readonly EcsPoolInject<FetusTableTag> tablePool = default;
+        private readonly EcsPoolInject<FetusTableTag> fetusTablePool = default;
+        private readonly EcsPoolInject<CashTableComponent> cashTablePool = default;
+        private readonly EcsPoolInject<ExitTag> exitPool = default;
+        private readonly EcsPoolInject<DeadTag> deadPool = default;
+        private readonly EcsPoolInject<CustomerSpawnComponent> spawnerPool = default;
+        private readonly EcsPoolInject<ChangingQueueComponent> changePool = default;
+        private readonly EcsPoolInject<DirectionComponent> dirPool = default;
+        private readonly EcsPoolInject<InteractableCustomerComponent> interPool = default;
 
         private readonly EcsPoolInject<HarvestingComponent> harvestingPool = default;
+        private readonly EcsPoolInject<PlayerCashActionComponent> playerCashPool = default;
         private readonly EcsPoolInject<TickComponent> tickPool = default;
 
-        private EcsFilter filter;
+        private EcsFilter enterFilter;
         private EcsFilter exitFilter;
+        private EcsFilter playerCashFilter;
+        private EcsFilter interactFilter;
+        private EcsFilter spawnerFilter;
 
         public void Init(IEcsSystems systems)
         {
             world = systems.GetWorld();
             eventWorld = systems.GetWorld(Idents.EVENT_WORLD);
 
-            filter = eventWorld.Filter<OnTriggerEnterEvent>().End();
+            enterFilter = eventWorld.Filter<OnTriggerEnterEvent>().End();
             exitFilter = eventWorld.Filter<OnTriggerExitEvent>().End();
+            playerCashFilter = world.Filter<PlayerCashActionComponent>().End();
+            interactFilter = world.Filter<InteractableCustomerComponent>().End();
+            spawnerFilter = world.Filter<CustomerSpawnComponent>().End();
         }
 
         public void Run(IEcsSystems systems)
@@ -62,15 +76,16 @@ namespace Game.System
                 {
                     harvestingPool.Value.Del(collider);
                 }
-                
-                if (tablePool.Value.Has(sender))
+
+                if (fetusTablePool.Value.Has(sender) || cashTablePool.Value.Has(sender))
                 {
                     putPool.Value.Del(collider);
                     tickPool.Value.Del(collider);
+                    playerCashPool.Value.Del(collider);
                 }
             }
 
-            foreach (var triggerEnt in filter)
+            foreach (var triggerEnt in enterFilter)
             {
                 var triggerEnterEvent = triggerPool.Value.Get(triggerEnt);
                 var senderView = triggerEnterEvent.senderGameObject.gameObject.GetComponent<BaseView>();
@@ -86,28 +101,73 @@ namespace Game.System
 
                 if (plantPool.Value.Has(sender))
                 {
-                    if (harvestingPool.Value.Has(collider))
-                        harvestingPool.Value.Get(collider).Target = world.PackEntity(sender);
-                    else
-                        harvestingPool.Value.Add(collider).Target = world.PackEntity(sender);
+                    AddToHarvesting(sender, collider);
                 }
 
-                if (tablePool.Value.Has(sender))
+                if (fetusTablePool.Value.Has(sender))
                 {
                     if (playerPool.Value.Has(collider))
                     {
-                        AddPutTickComponent(sender, collider,true);
+                        AddPutTickComponent(sender, collider, true);
                     }
                     else if (customerPool.Value.Has(collider))
                     {
-                        AddPutTickComponent(sender, collider,false);
+                        AddPutTickComponent(sender, collider, false);
                     }
+                }
 
+                if (cashTablePool.Value.Has(sender))
+                {
+                    if (playerPool.Value.Has(collider))
+                    {
+                        playerCashPool.Value.Add(collider);
+                        foreach (var cust in interactFilter)
+                        {
+                            CashAction(sender, cust);
+                        }
+                    }
+                    else if (customerPool.Value.Has(collider))
+                    {
+                        interPool.Value.Add(collider);
+                        dirPool.Value.Add(collider);
+                        foreach (var player in playerCashFilter)
+                        {
+                            CashAction(sender, collider);
+                        }
+                    }
+                }
+
+                if (exitPool.Value.Has(sender))
+                {
+                    if (customerPool.Value.Has(collider))
+                    {
+                        deadPool.Value.Add(collider);
+                        changePool.Value.Add(collider);
+                        foreach (var spawner in spawnerFilter)
+                        {
+                            ref var customerSpawnComponent = ref spawnerPool.Value.Get(spawner);
+                            customerSpawnComponent.CustomersCount--;
+                        }
+                    }
                 }
             }
         }
+        private void CashAction(int sender, int collider)
+        {
+            interPool.Value.Del(collider);
+            dirPool.Value.Del(collider);
+            cashTablePool.Value.Get(sender).Box.Unpack(world, out int box);
+            AddPutTickComponent(box, collider, true);
+        }
+        private void AddToHarvesting(int sender, int collider)
+        {
+            if (harvestingPool.Value.Has(collider))
+                harvestingPool.Value.Get(collider).Target = world.PackEntity(sender);
+            else
+                harvestingPool.Value.Add(collider).Target = world.PackEntity(sender);
+        }
 
-        private void AddPutTickComponent(int sender,int collider,bool isPutting)
+        private void AddPutTickComponent(int sender, int collider, bool isPutting)
         {
             if (putPool.Value.Has(collider))
                 putPool.Value.Get(collider).Target = world.PackEntity(sender);
@@ -117,7 +177,7 @@ namespace Game.System
                 component.Target = world.PackEntity(sender);
                 component.IsPutting = isPutting;
                 ref var tickComponent = ref tickPool.Value.Add(collider);
-                tickComponent.CurrentTime=tickComponent.FinalTime = 0.3f;  //to static data?
+                tickComponent.CurrentTime = tickComponent.FinalTime = 0.3f; //to static data?
             }
         }
     }

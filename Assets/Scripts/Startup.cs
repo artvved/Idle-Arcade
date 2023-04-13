@@ -34,21 +34,25 @@ public class Startup : MonoBehaviour
         systems
             .AddWorld(eventWorld,Idents.EVENT_WORLD)
             .Add(new SpawnPlayerWithCameraSystem())
-            .Add(new SpawnTableSystem())
+            .Add(new SpawnLevelSystem())
             .Add(new MoveJoystickInputSystem())
             
-            .Add(new SpawnPlantsSystem())
             .Add(new SpawnCustomerTickSystem())
             .Add(new SpawnFetusTickSystem())
-            .Add(new CustomerTargetSystem())
-            
+           
             .Add(new MoveApplySystem())
+            .Add(new LookAtPlayerSystem())
             .Add(new RotationApplySystem())
             .Add(new CollisionSystem())
             
+            .Add(new CustomerTargetSystem())
             .Add(new HarvestSystem())
             .Add(new StackingSystem())
+            .Add(new StackFinishedReactionSystem())
+            .Add(new FullBoxSystem())
             .Add(new MoveToStackSystem())
+            .Add(new ReachedSystem())
+            .Add(new DestroyDeadSystem())
           
 
             //.Add(new TickSystem())

@@ -11,13 +11,15 @@ namespace Game.System
 
         readonly EcsPoolInject<BaseViewComponent> transformPool = default;
         readonly EcsPoolInject<DirectionComponent> directionPool = default;
-        readonly EcsPoolInject<SpeedComponent> speedPool = default;
+       
         readonly EcsPoolInject<MoveToTargetComponent> targetPool = default;
         readonly EcsPoolInject<StackIndexComponent> stackIndexPool = default;
         readonly EcsPoolInject<StackComponent> stackPool = default;
-        private EcsPoolInject<AnimatingTag> animatingPool = default;
-        private EcsFilter unitTransformFilter;
+    
+        private EcsPoolInject<ReachedTargetComponent> reachedPool = default;
 
+
+        private EcsFilter unitTransformFilter;
 
         public void Init(IEcsSystems systems)
         {
@@ -26,6 +28,7 @@ namespace Game.System
                 .Inc<SpeedComponent>()
                 .Inc<BaseViewComponent>()
                 .Inc<DirectionComponent>()
+                .Inc<StackIndexComponent>()
                 .End();
         }
 
@@ -39,26 +42,19 @@ namespace Game.System
                 var entTrans = transformPool.Value.Get(entity).Value.transform;
               
                 var index = stackIndexPool.Value.Get(entity).Value;
-
                 var stackPlace = stackComp.Places[index];
                 Vector3 range = stackPlace.position - entTrans.position;
 
                 var dir = range.normalized;
                 directionPool.Value.Get(entity).Value = dir;
                 
-                
                 //reached
                 if (range.magnitude<0.05f)
                 {
-                    animatingPool.Value.Del(entity);
-                    targetPool.Value.Del(entity);
-                    directionPool.Value.Del(entity);
-                    speedPool.Value.Del(entity);
+                    reachedPool.Value.Add(entity);
                     entTrans.parent= stackPlace;
                 }
                 
-             
-               
             }
         }
     }
