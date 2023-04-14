@@ -29,10 +29,11 @@ namespace ScriptableData
         public float CustomerTime;
 
         public int MaxCustomers;
-
-
+        
         //ui
-
+        public CapacityView CapacityViewPrefab;
+        public PlayerUIView PlayerUIViewPrefab;
+        public float ViewYOffset;
 
     }
 }

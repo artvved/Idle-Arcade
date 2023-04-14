@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Customer Stats
   m_EditorClassIdentifier: 
   MaxSpeed: 4
-  Coins: 10
+  Coins: 1
   StackData: {fileID: 11400000, guid: 00fb2b1baed938844b5e0b07d32629c0, type: 2}

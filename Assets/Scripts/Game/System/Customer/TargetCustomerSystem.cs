@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace Game.System
 {
-    public class CustomerTargetSystem : IEcsInitSystem, IEcsRunSystem
+    public class TargetCustomerSystem : IEcsInitSystem, IEcsRunSystem
     {
         private EcsWorld world;
         
@@ -63,10 +63,7 @@ namespace Game.System
                 //1st goes to target
                 if (!inQueuePool.Value.Has(first))
                 {
-                    var firstView = viewPool.Value.Get(first).Value;
-                    firstView.NavMeshAgent.destination = queueComponent.Target.position;
-                    firstView.NavMeshAgent.stoppingDistance = 0;
-                    inQueuePool.Value.Add(first);
+                    TargetCustomer(first, queueComponent.Target.position,0);
                 }
               
                 
@@ -77,17 +74,23 @@ namespace Game.System
                     if (inQueuePool.Value.Has(entity))
                         continue;
 
-                    var customerView = viewPool.Value.Get(entity).Value;
                     queue[i-1].Unpack(world, out int target);
-
-                    customerView.NavMeshAgent.destination = viewPool.Value.Get(target).Value.transform.position;
-                    customerView.NavMeshAgent.stoppingDistance = 3;
-                    inQueuePool.Value.Add(entity);
+                    
+                    TargetCustomer(entity, viewPool.Value.Get(target).Value.transform.position,3);
                 }
                 
             }
 
         }
+
+        private void TargetCustomer(int entity,Vector3 pos,float stoppingDistance)
+        {
+            var customerView = viewPool.Value.Get(entity).Value;
+            customerView.NavMeshAgent.destination = pos;
+            customerView.NavMeshAgent.stoppingDistance = stoppingDistance;
+            inQueuePool.Value.Add(entity);
+        }
+       
 
         private bool TryGetFirst(ref int res, List<EcsPackedEntity> queue)
         {

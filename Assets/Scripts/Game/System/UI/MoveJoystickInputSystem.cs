@@ -1,6 +1,6 @@
 using DefaultNamespace;
 using Game.Component;
-
+using Game.Service;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using Leopotam.EcsLite.Unity.Ugui;
@@ -17,6 +17,7 @@ namespace Game.System
         private EcsWorld eventWorld;
 
         private readonly EcsCustomInject<SceneData> sceneData = default;
+        private readonly EcsCustomInject<AnimationService> anim = default;
 
         private readonly EcsPoolInject<UnitStatsComponent> playerStatsPool = default;
         private readonly EcsPoolInject<SpeedComponent> speedPool = default;
@@ -58,7 +59,7 @@ namespace Game.System
             var joystickDirection = GetJoystickDir();
             speedPool.Value.Add(ent).Value = joystickDirection.normalized.magnitude * maxSpeed;
             directionPool.Value.Add(ent).Value = new Vector3(joystickDirection.x, 0, joystickDirection.y);
-            AnimateMove(ent,joystickDirection.normalized.magnitude * 1,1);
+            anim.Value.AnimateMove(ent,joystickDirection.normalized.magnitude * 1,1);
         }
         
         private void UpdMoving(int ent)
@@ -80,17 +81,7 @@ namespace Game.System
             return sceneData.Value.Joystick.Direction;
         }
 
-        private void AnimateMove(int ent,float curVel,float maxVelocity)
-        {
-            var animator = animPool.Value.Get(ent).Value;
-            animator.SetBool("Move",true);
-            animator.speed = curVel / (float) maxVelocity;
-        }
-        private void AnimateStopMove(int ent)
-        {
-            var animator = animPool.Value.Get(ent).Value;
-            animator.SetBool("Move",false);
-        }
+      
 
 
         [Preserve]
@@ -100,7 +91,7 @@ namespace Game.System
             {
                 speedPool.Value.Del(ent);
                 directionPool.Value.Del(ent);
-                AnimateStopMove(ent);
+                anim.Value.AnimateStopMove(ent);
             }
         }
 

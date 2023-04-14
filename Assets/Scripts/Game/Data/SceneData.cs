@@ -10,9 +10,11 @@ namespace ScriptableData
     {
         public EcsUguiEmitter EcsUguiEmitter;
         public CinemachineVirtualCamera Camera;
+        public Camera UICamera;
        
         public CoinsView CoinsView;
         public FloatingJoystick Joystick;
+        public Canvas GameUICanvas;
 
         [Header("Level")]
         public Transform[] PlantPlaces;

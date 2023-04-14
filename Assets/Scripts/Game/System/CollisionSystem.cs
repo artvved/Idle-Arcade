@@ -32,10 +32,11 @@ namespace Game.System
         private readonly EcsPoolInject<ChangingQueueComponent> changePool = default;
         private readonly EcsPoolInject<DirectionComponent> dirPool = default;
         private readonly EcsPoolInject<InteractableCustomerComponent> interPool = default;
-
         private readonly EcsPoolInject<HarvestingComponent> harvestingPool = default;
         private readonly EcsPoolInject<PlayerCashActionComponent> playerCashPool = default;
         private readonly EcsPoolInject<TickComponent> tickPool = default;
+        
+        private readonly EcsCustomInject<AnimationService> anim = default;
 
         private EcsFilter enterFilter;
         private EcsFilter exitFilter;
@@ -87,6 +88,7 @@ namespace Game.System
 
             foreach (var triggerEnt in enterFilter)
             {
+                Debug.Log(1);
                 var triggerEnterEvent = triggerPool.Value.Get(triggerEnt);
                 var senderView = triggerEnterEvent.senderGameObject.gameObject.GetComponent<BaseView>();
                 var colliderView = triggerEnterEvent.collider.gameObject.GetComponent<BaseView>();
@@ -106,19 +108,20 @@ namespace Game.System
 
                 if (fetusTablePool.Value.Has(sender))
                 {
-                    if (playerPool.Value.Has(collider))
+                    if (IsPlayer(collider))
                     {
                         AddPutTickComponent(sender, collider, true);
                     }
-                    else if (customerPool.Value.Has(collider))
+                    else if (IsCustomer(collider))
                     {
                         AddPutTickComponent(sender, collider, false);
+                       
                     }
                 }
 
                 if (cashTablePool.Value.Has(sender))
                 {
-                    if (playerPool.Value.Has(collider))
+                    if (IsPlayer(collider))
                     {
                         playerCashPool.Value.Add(collider);
                         foreach (var cust in interactFilter)
@@ -126,7 +129,7 @@ namespace Game.System
                             CashAction(sender, cust);
                         }
                     }
-                    else if (customerPool.Value.Has(collider))
+                    else if (IsCustomer(collider))
                     {
                         interPool.Value.Add(collider);
                         dirPool.Value.Add(collider);
@@ -139,7 +142,7 @@ namespace Game.System
 
                 if (exitPool.Value.Has(sender))
                 {
-                    if (customerPool.Value.Has(collider))
+                    if (IsCustomer(collider))
                     {
                         deadPool.Value.Add(collider);
                         changePool.Value.Add(collider);
@@ -152,6 +155,16 @@ namespace Game.System
                 }
             }
         }
+
+        private bool IsCustomer(int ent)
+        {
+           return customerPool.Value.Has(ent);
+        }
+        private bool IsPlayer(int ent)
+        {
+            return playerPool.Value.Has(ent);
+        }
+
         private void CashAction(int sender, int collider)
         {
             interPool.Value.Del(collider);

@@ -30,3 +30,6 @@ MonoBehaviour:
   PlantTime: 1
   CustomerTime: 3
   MaxCustomers: 3
+  CapacityViewPrefab: {fileID: 4766794389999112822, guid: 4de7f23759c21744d8d1b64d03b0e56d, type: 3}
+  PlayerUIViewPrefab: {fileID: 310305943325202207, guid: 69e9a55290d7a9e4dba220226dfdb10e, type: 3}
+  ViewYOffset: 60

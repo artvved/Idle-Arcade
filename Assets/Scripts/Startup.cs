@@ -47,19 +47,22 @@ public class Startup : MonoBehaviour
             .Add(new CollisionSystem())
 
             
-            .Add(new CustomerTargetSystem())
+            .Add(new TargetCustomerSystem())
             .Add(new HarvestSystem())
             .Add(new StackingSystem())
             .Add(new StackFinishedReactionSystem())
             .Add(new FullBoxSystem())
             .Add(new MoveToStackSystem())
             .Add(new ReachedSystem())
+            .Add(new CustomerReachedSystem())
             .Add(new GetMoneySystem())
             .Add(new DestroyDeadSystem())
           
 
             //.Add(new TickSystem())
             .Add(new UpdateCoinsSystem())
+            .Add(new UpdateCapacityViewSystem())
+            .Add(new UpdatePlayerViewSystem())
 
             .DelHerePhysics(Idents.EVENT_WORLD)
             .DelHere<CoinsChangedEventComponent>(Idents.EVENT_WORLD)
@@ -67,10 +70,11 @@ public class Startup : MonoBehaviour
             .Add (new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem ())
             .Add (new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem (Idents.EVENT_WORLD))
 #endif
-            .Inject(new Fabric(world,eventWorld,staticData))
+            .Inject(new Fabric(world,eventWorld,staticData,sceneData))
             .Inject(sceneData)
             .Inject(staticData)
             .Inject(new MovementService(world))
+            .Inject(new AnimationService(world))
             .InjectUgui(sceneData.EcsUguiEmitter,Idents.EVENT_WORLD)
             .Init();
         

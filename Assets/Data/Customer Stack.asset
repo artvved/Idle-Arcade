@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Offset: 0.5
   XRows: 1
-  YRows: 3
+  YRows: 1
   ZRows: 1
