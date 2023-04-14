@@ -18,6 +18,7 @@ public class Startup : MonoBehaviour
 {
     private EcsWorld world;
     private EcsSystems systems;
+    private EcsSystems phisSystems;
     
 
     [SerializeField]
@@ -29,7 +30,33 @@ public class Startup : MonoBehaviour
         world = new EcsWorld();
         var eventWorld = new EcsWorld();
         systems = new EcsSystems(world);
+        phisSystems = new EcsSystems(world);
         EcsPhysicsEvents.ecsWorld = eventWorld;
+        
+        phisSystems.AddWorld(eventWorld,Idents.EVENT_WORLD)
+            
+            .Add(new MoveApplySystem())
+            .Add(new LookAtPlayerSystem())
+            .Add(new CustomerRotationSystem())
+            .Add(new RotationApplySystem())
+            .Add(new CollisionSystem())
+            
+            .Add(new CustomerReachedSystem())
+            .Add(new MoveToStackSystem())
+           
+            
+            .DelHerePhysics(Idents.EVENT_WORLD)
+          
+#if UNITY_EDITOR
+            .Add (new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem ())
+            .Add (new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem (Idents.EVENT_WORLD))
+#endif
+            .Inject(new Fabric(world,eventWorld,staticData,sceneData))
+            .Inject(sceneData)
+            .Inject(staticData)
+            .Inject(new MovementService(world))
+            .Inject(new AnimationService(world))
+            .Init();
         
         systems
             .AddWorld(eventWorld,Idents.EVENT_WORLD)
@@ -39,32 +66,25 @@ public class Startup : MonoBehaviour
             
             .Add(new SpawnCustomerTickSystem())
             .Add(new SpawnFetusTickSystem())
-           
-            .Add(new MoveApplySystem())
-            .Add(new LookAtPlayerSystem())
-            .Add(new CustomerRotationSystem())
-            .Add(new RotationApplySystem())
-            .Add(new CollisionSystem())
-
             
+
             .Add(new TargetCustomerSystem())
             .Add(new HarvestSystem())
             .Add(new StackingSystem())
             .Add(new StackFinishedReactionSystem())
             .Add(new FullBoxSystem())
-            .Add(new MoveToStackSystem())
+          
             .Add(new ReachedSystem())
-            .Add(new CustomerReachedSystem())
+            
             .Add(new GetMoneySystem())
             .Add(new DestroyDeadSystem())
           
 
             //.Add(new TickSystem())
             .Add(new UpdateCoinsSystem())
-            .Add(new UpdateCapacityViewSystem())
-            .Add(new UpdatePlayerViewSystem())
-
-            .DelHerePhysics(Idents.EVENT_WORLD)
+            .Add(new UpdateUIViewSystem())
+          
+            
             .DelHere<CoinsChangedEventComponent>(Idents.EVENT_WORLD)
 #if UNITY_EDITOR
             .Add (new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem ())
@@ -77,15 +97,18 @@ public class Startup : MonoBehaviour
             .Inject(new AnimationService(world))
             .InjectUgui(sceneData.EcsUguiEmitter,Idents.EVENT_WORLD)
             .Init();
-        
-       
-        
     }
 
-    
+    private int i ;
+    private int j ;
     void Update()
     {
         systems?.Run();
+    }
+    
+    void FixedUpdate()
+    {
+        phisSystems?.Run();
     }
 
     private void OnDestroy()
@@ -94,6 +117,11 @@ public class Startup : MonoBehaviour
         {
             systems.Destroy();
             systems = null;
+        }
+        if (phisSystems!=null)
+        {
+            phisSystems.Destroy();
+            phisSystems = null;
         }
 
         if (world!=null)

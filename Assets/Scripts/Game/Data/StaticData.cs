@@ -23,6 +23,8 @@ namespace ScriptableData
         public BoxView BoxPrefab;
         public MoneyPlaceView MoneyPlacePrefab;
         public BaseView CoinPrefab;
+        public BuyPlaceView BuyPlacePrefab;
+        public BuyPlaceUiView BuyPlaceUiPrefab;
         
 
         public float PlantTime;
@@ -31,9 +33,14 @@ namespace ScriptableData
         public int MaxCustomers;
         
         //ui
-        public CapacityView CapacityViewPrefab;
+        [Header("UI")]
+        public CustomerUIView CustomerUIViewPrefab;
         public PlayerUIView PlayerUIViewPrefab;
-        public float ViewYOffset;
+        public Vector2 ViewCustomerOffset;
+        public Vector2 ViewPlayerOffset;
+        public Sprite CashSprite;
+        public Sprite SmileSprite;
+
 
     }
 }

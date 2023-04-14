@@ -49,7 +49,6 @@ namespace Game.System
                     {
                         if (!stacks[i].Unpack(world, out int item))
                         {
-                            Debug.Log("DEAD");
                             continue;
                         }
                        

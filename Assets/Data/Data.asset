@@ -27,9 +27,14 @@ MonoBehaviour:
   BoxPrefab: {fileID: 7941658658437604742, guid: 1a970fdf4f43bd64b8561a3c4497a9bb, type: 3}
   MoneyPlacePrefab: {fileID: 3666546224530718789, guid: 7e5a597b9a116cb4d89f495794030933, type: 3}
   CoinPrefab: {fileID: 1602887683368908081, guid: d6d5c8c31bab70448912df495c8d25a4, type: 3}
+  BuyPlacePrefab: {fileID: 872490053164230905, guid: e41c0a56cfec34047bce7f5a73a8e308, type: 3}
+  BuyPlaceUiPrefab: {fileID: 8954678079674719314, guid: 44459dc8d5f52bc4dae755b8ed0b6bee, type: 3}
   PlantTime: 1
   CustomerTime: 3
   MaxCustomers: 3
-  CapacityViewPrefab: {fileID: 4766794389999112822, guid: 4de7f23759c21744d8d1b64d03b0e56d, type: 3}
+  CustomerUIViewPrefab: {fileID: 4766794389999112822, guid: 4de7f23759c21744d8d1b64d03b0e56d, type: 3}
   PlayerUIViewPrefab: {fileID: 310305943325202207, guid: 69e9a55290d7a9e4dba220226dfdb10e, type: 3}
-  ViewYOffset: 60
+  ViewCustomerOffset: {x: 1, y: 2}
+  ViewPlayerOffset: {x: 0, y: 2}
+  CashSprite: {fileID: 21300000, guid: 782dca989df73fb4ba91287f68a87bae, type: 3}
+  SmileSprite: {fileID: 21300000, guid: cfffa264a185b574e94847e06246f422, type: 3}

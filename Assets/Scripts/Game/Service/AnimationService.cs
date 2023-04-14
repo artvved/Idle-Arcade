@@ -2,6 +2,7 @@
 using Game.Component;
 using Leopotam.EcsLite;
 using UnityEngine;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Game.Service
 {
@@ -49,5 +50,14 @@ namespace Game.Service
             var animator = animatorPool.Get(ent).Value;
             animator.SetBool("Move",false);
         }
+
+        public void AnimateCashPanel(int ent,bool activate)
+        {
+            var animator = animatorPool.Get(ent).Value;
+            animator.SetBool("Activate",activate);
+           
+
+        }
+        
     }
 }

@@ -10,6 +10,7 @@ namespace Game.System
         private EcsWorld world;
 
         private readonly EcsPoolInject<BaseViewComponent> viewPool = default;
+        private readonly EcsPoolInject<UIViewComponent> viewUIPool = default;
         private EcsFilter deadFilter;
 
 
@@ -26,6 +27,11 @@ namespace Game.System
                 if (viewPool.Value.Has(unit))
                 {
                     GameObject.Destroy(viewPool.Value.Get(unit).Value.gameObject);
+                }
+                
+                if (viewUIPool.Value.Has(unit))
+                {
+                    GameObject.Destroy(viewUIPool.Value.Get(unit).Value.gameObject);
                 }
                 world.DelEntity(unit);
             

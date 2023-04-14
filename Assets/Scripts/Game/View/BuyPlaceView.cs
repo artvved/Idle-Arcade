@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Mono
 {
-    public class BuyPlaceView : MonoBehaviour
+    public class BuyPlaceView : BaseView
     {
        
     }

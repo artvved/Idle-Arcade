@@ -13,7 +13,8 @@ namespace Game.System
     public class MoveApplySystem : IEcsInitSystem, IEcsRunSystem
     {
         private EcsWorld world;
-      
+
+        private EcsCustomInject<SceneData> data = default;
         readonly EcsPoolInject<BaseViewComponent> transformPool=default;
        
         readonly EcsPoolInject<CantMoveComponent> cantMovePool = default;
@@ -29,6 +30,7 @@ namespace Game.System
             unitTransformFilter = world.Filter<SpeedComponent>()
                 .Inc<DirectionComponent>()
                 .Inc<BaseViewComponent>()
+                .Exc<ReachedTargetComponent>()
                 .End();
         }
 
@@ -40,11 +42,11 @@ namespace Game.System
                     continue;
                 var speed = speedPool.Value.Get(entity).Value;
                 var direction = directionPool.Value.Get(entity).Value;
-                var valueTransform = transformPool.Value.Get(entity).Value.transform;
+                var transform = transformPool.Value.Get(entity).Value.transform;
                 
-                
-                var delta = Time.deltaTime * speed * direction;
-                valueTransform.position += delta;
+                var delta =  speed * direction;
+                transform.position=Vector3.Lerp(transform.position, transform.position + delta, Time.deltaTime);
+                //transform.position += delta * Time.deltaTime;
                 
                 
             }

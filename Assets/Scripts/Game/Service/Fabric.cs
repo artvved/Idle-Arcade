@@ -24,6 +24,7 @@ namespace Game.Service
         private EcsPool<BoxTag> boxPool;
         private EcsPool<CoinTag> coinPool;
         private EcsPool<UIViewComponent> uiPool;
+        private EcsPool<BuyPlaceTag> buyPlacePool;
 
         private EcsPool<FetusTableTag> fetusTablePool;
         private EcsPool<CashTableComponent> cashTablePool;
@@ -74,6 +75,7 @@ namespace Game.Service
             noRotPool = this.world.GetPool<NoRotationComponent>();
             coinPool = this.world.GetPool<CoinTag>();
             uiPool = this.world.GetPool<UIViewComponent>();
+            buyPlacePool = this.world.GetPool<BuyPlaceTag>();
         }
 
 
@@ -136,7 +138,7 @@ namespace Game.Service
           
             ((CustomerView) unitView).NavMeshAgent.speed = unitStats.MaxSpeed;
             customerViewPool.Add(entity).Value = (CustomerView) unitView;
-            CapacityView view= GameObject.Instantiate(staticData.CapacityViewPrefab, sceneData.GameUICanvas.transform);
+            CustomerUIView view= GameObject.Instantiate(staticData.CustomerUIViewPrefab, sceneData.GameUICanvas.transform);
             uiPool.Add(entity).Value = view;
             view.SetText(0,data.XRows*(data.YRows+rnd)*data.ZRows);
             
@@ -144,6 +146,17 @@ namespace Game.Service
             statsComponent.Coins = unitStats.Coins +rnd*2;
             statsComponent.MaxSpeed = unitStats.MaxSpeed;
 
+            return entity;
+        }
+
+        public int InstantiateBuyPlace(Vector3 pos,int  cost)
+        {
+            var entity = InstantiateObj(staticData.BuyPlacePrefab, pos);
+            buyPlacePool.Add(entity);
+            BuyPlaceUiView view= GameObject.Instantiate(staticData.BuyPlaceUiPrefab, sceneData.GameUICanvas.transform);
+            uiPool.Add(entity).Value = view;
+            view.TextMeshProUGUI.text=cost.ToString();
+            
             return entity;
         }
 

@@ -83,12 +83,17 @@ namespace Game.System
                     putPool.Value.Del(collider);
                     tickPool.Value.Del(collider);
                     playerCashPool.Value.Del(collider);
+                    
+                    if (cashTablePool.Value.Has(sender))
+                    {
+                        anim.Value.AnimateCashPanel(sender,false);
+                    }
                 }
             }
 
             foreach (var triggerEnt in enterFilter)
             {
-                Debug.Log(1);
+                
                 var triggerEnterEvent = triggerPool.Value.Get(triggerEnt);
                 var senderView = triggerEnterEvent.senderGameObject.gameObject.GetComponent<BaseView>();
                 var colliderView = triggerEnterEvent.collider.gameObject.GetComponent<BaseView>();
@@ -123,6 +128,7 @@ namespace Game.System
                 {
                     if (IsPlayer(collider))
                     {
+                        anim.Value.AnimateCashPanel(sender,true);
                         playerCashPool.Value.Add(collider);
                         foreach (var cust in interactFilter)
                         {

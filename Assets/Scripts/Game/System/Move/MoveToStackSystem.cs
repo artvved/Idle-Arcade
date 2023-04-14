@@ -29,6 +29,7 @@ namespace Game.System
                 .Inc<BaseViewComponent>()
                 .Inc<DirectionComponent>()
                 .Inc<StackIndexComponent>()
+                .Exc<ReachedTargetComponent>()
                 .End();
         }
 
@@ -49,9 +50,10 @@ namespace Game.System
                 directionPool.Value.Get(entity).Value = dir;
                 
                 //reached
-                if (range.magnitude<0.01f)
+                if (range.magnitude<0.1f)
                 {
                     reachedPool.Value.Add(entity);
+                    entTrans.position = stackPlace.position;
                     entTrans.parent= stackPlace;
                 }
                 

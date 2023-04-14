@@ -22,6 +22,8 @@ namespace ScriptableData
         public Transform CashTablePlace;
         public Transform CustomerSpawnPlace;
         public Transform CustomerExitPlace;
+        public Transform BuyPlace1;
+        public Transform BuyPlace2;
 
     }
 }

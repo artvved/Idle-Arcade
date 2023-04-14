@@ -19,6 +19,9 @@ namespace Game.System
             fabric.Value.InstantiateTable(sceneData.Value.FetusTablePlace.position);
             fabric.Value.InstantiateCashTable(sceneData.Value.CashTablePlace.position);
             fabric.Value.InstantiateExit(sceneData.Value.CustomerExitPlace.position);
+            fabric.Value.InstantiateBuyPlace(sceneData.Value.BuyPlace1.position,10);
+            fabric.Value.InstantiateBuyPlace(sceneData.Value.BuyPlace2.position,5);
+            
             
             var places = sceneData.Value.PlantPlaces;
             foreach (var place in places)

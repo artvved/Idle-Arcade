@@ -66,7 +66,7 @@ namespace Game.System
         {
             var maxSpeed = GetMaxSpeed(ent);
             var joystickDirection = GetJoystickDir();
-            speedPool.Value.Get(ent).Value = joystickDirection.magnitude *  maxSpeed;
+            speedPool.Value.Get(ent).Value = joystickDirection.normalized.magnitude *  maxSpeed;
             directionPool.Value.Get(ent).Value = new Vector3(joystickDirection.x, 0, joystickDirection.y);
          
         }
